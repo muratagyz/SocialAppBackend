@@ -150,3 +150,4 @@ C:\Users\mrtag\Desktop\SocialAppBackend\ServerApp\obj\Debug\netcoreapp3.1\Server
 C:\Users\mrtag\Desktop\SocialAppBackend\ServerApp\obj\Debug\netcoreapp3.1\ServerApp.csproj.CopyComplete
 C:\Users\mrtag\Desktop\SocialAppBackend\ServerApp\obj\Debug\netcoreapp3.1\ServerApp.dll
 C:\Users\mrtag\Desktop\SocialAppBackend\ServerApp\obj\Debug\netcoreapp3.1\ServerApp.pdb
+C:\Users\mrtag\Desktop\SocialAppBackend\ServerApp\bin\Debug\netcoreapp3.1\Data\users.json
