@@ -14,13 +14,13 @@ namespace ServerApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _sıgnInManager;
         private readonly IConfiguration _configuration;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> sıgnInManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, SignInManager<User> sıgnInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             this._sıgnInManager = sıgnInManager;

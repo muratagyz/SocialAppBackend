@@ -40,6 +40,7 @@ namespace ServerApp
             // Add Data Base
             services.AddDbContext<SocialContext>(x => x.UseSqlite("Data Source=socailDb.db"));
             services.AddIdentity<User, Role>().AddEntityFrameworkStores<SocialContext>();
+            services.AddScoped<ISocialRepository, SocialRepository>();
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -53,7 +54,10 @@ namespace ServerApp
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
             });
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddCors(options =>
             {
                 options.AddPolicy(
