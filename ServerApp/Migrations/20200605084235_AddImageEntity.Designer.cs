@@ -9,8 +9,8 @@ using ServerApp.Data;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(SocialContext))]
-    [Migration("20210725155617_AddIdentityTables")]
-    partial class AddIdentityTables
+    [Migration("20200605084235_AddImageEntity")]
+    partial class AddImageEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -115,6 +115,34 @@ namespace ServerApp.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ServerApp.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsProfile")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("ServerApp.Models.Product", b =>
@@ -305,6 +333,15 @@ namespace ServerApp.Migrations
                 {
                     b.HasOne("ServerApp.Models.User", null)
                         .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ServerApp.Models.Image", b =>
+                {
+                    b.HasOne("ServerApp.Models.User", "User")
+                        .WithMany("Images")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

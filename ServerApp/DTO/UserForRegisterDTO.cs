@@ -4,16 +4,16 @@ namespace ServerApp.DTO
 {
     public class UserForRegisterDTO
     {
-        [Required(ErrorMessage = "name gerekli bir alan.")]
-        [StringLength(50, MinimumLength = 10)]
+        [Required(ErrorMessage="name gerekli bir alan.")]  
+        [StringLength(50,MinimumLength=10)]
         public string Name { get; set; }
-        [Required]
+        [Required] 
         public string UserName { get; set; }
-        [Required]
+        [Required] 
         [EmailAddress]
         public string Email { get; set; }
         public string Gender { get; set; }
-        [Required]
+        [Required] 
         public string Password { get; set; }
     }
 }

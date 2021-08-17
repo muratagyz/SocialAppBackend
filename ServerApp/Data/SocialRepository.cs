@@ -14,13 +14,14 @@ namespace ServerApp.Data
         }
         public async Task<User> GetUser(int id)
         {
-            var user = await _context.Users.Include(i => i.Images).FirstOrDefaultAsync(i => i.Id == id);
+            var user = await _context.Users.Include(i=>i.Images)
+                                .FirstOrDefaultAsync(i=>i.Id == id);
             return user;
         }
 
         public async Task<IEnumerable<User>> GetUsers()
         {
-            var users = await _context.Users.Include(i => i.Images).ToListAsync();
+            var users = await _context.Users.Include(i=>i.Images).ToListAsync();
             return users;
         }
     }

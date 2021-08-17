@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServerApp.Data;
@@ -10,38 +11,37 @@ namespace ServerApp.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController: ControllerBase
     {
         private readonly ISocialRepository _repository;
+        private readonly IMapper _mapper;
 
-        public UsersController(ISocialRepository repository)
+        public UsersController(ISocialRepository repository,IMapper mapper)
         {
-            this._repository = repository;
+            _repository = repository;
+            _mapper = mapper;
         }
 
+         // api/users
         public async Task<IActionResult> GetUsers()
         {
             var users = await _repository.GetUsers();
-            var list = new List<UserForListDTO>();
 
-            foreach (var user in users)
-            {
-                list.Add(new UserForListDTO()
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Gender = user.Gender,
-                });
-            }
+            var result = _mapper.Map<IEnumerable<UserForListDTO>>(users);
 
-            return Ok(list);
+            return Ok(result);
         }
 
+
+        // api/users/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _repository.GetUser(id);
-            return Ok(user);
+
+            var result = _mapper.Map<UserForDetailsDTO>(user);
+
+            return Ok(result);
         }
     }
 }

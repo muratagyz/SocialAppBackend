@@ -9,7 +9,9 @@ namespace ServerApp.Models
         public string Description { get; set; }
         public DateTime DateAdded { get; set; }
         public bool IsProfile { get; set; }
+
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; } 
+
     }
 }

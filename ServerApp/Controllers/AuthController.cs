@@ -17,14 +17,14 @@ namespace ServerApp.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _sıgnInManager;
-        private readonly IConfiguration _configuration;
+        private readonly SignInManager<User> _signInManager;
+        public readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> sıgnInManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
-            this._sıgnInManager = sıgnInManager;
-            this._configuration = configuration;
+            _signInManager = signInManager;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -57,29 +57,24 @@ namespace ServerApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
-             //throw new Exception("interval exception");
+
+            // throw new Exception("interval exception");  
 
             var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user == null)
-            {
-                return BadRequest(new
-                {
-                    message = "username is incorrect"
-                });
-            }
 
-            var result = await _sıgnInManager.CheckPasswordSignInAsync(user, model.Password, false);
+            if (user == null)
+                return BadRequest(new { message = "username is incorrect" });
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
             if (result.Succeeded)
             {
-                //login
+                // login
                 return Ok(new
                 {
                     token = GenerateJwtToken(user)
                 });
             }
-
             return Unauthorized();
         }
 
@@ -87,11 +82,12 @@ namespace ServerApp.Controllers
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings:Secret").Value);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                    new Claim(ClaimTypes.Name,user.UserName)
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName)
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -99,6 +95,8 @@ namespace ServerApp.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+
         }
     }
+
 }

@@ -8,8 +8,8 @@ using ServerApp.Data;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(SocialContext))]
-    [Migration("20210715134027_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200519093349_AddColumnSecretProduct")]
+    partial class AddColumnSecretProduct
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,9 @@ namespace ServerApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Secret")
                         .HasColumnType("TEXT");
 
                     b.HasKey("ProductId");

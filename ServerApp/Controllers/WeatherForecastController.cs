@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ServerApp.Controllers
 {
+    // localhost:5000/WeatherForecast
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
