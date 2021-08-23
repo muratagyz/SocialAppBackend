@@ -6,6 +6,9 @@ namespace ServerApp.Data
 {
     public interface ISocialRepository
     {
+        void Add<T>(T entity) where T:class;
+        void Delete<T>(T entity) where T:class;
+        Task<bool> SaveChanges();
         Task<User> GetUser(int id);
         Task<IEnumerable<User>> GetUsers();
     }
