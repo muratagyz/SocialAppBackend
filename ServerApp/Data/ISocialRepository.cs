@@ -10,6 +10,7 @@ namespace ServerApp.Data
         void Delete<T>(T entity) where T:class;
         Task<bool> SaveChanges();
         Task<User> GetUser(int id);
-        Task<IEnumerable<User>> GetUsers();
+        Task<IEnumerable<User>> GetUsers(UserQueryParams userParams);
+        Task<bool> IsAlreadyFollowed(int followerUserId,int userId);
     }
 }

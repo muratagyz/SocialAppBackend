@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServerApp.Data;
 using ServerApp.DTO;
 using ServerApp.Helpers;
+using ServerApp.Models;
 
 namespace ServerApp.Controllers
 {
@@ -14,21 +15,22 @@ namespace ServerApp.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController: ControllerBase
     {
         private readonly ISocialRepository _repository;
         private readonly IMapper _mapper;
 
-        public UsersController(ISocialRepository repository, IMapper mapper)
+        public UsersController(ISocialRepository repository,IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        // api/users
-        public async Task<IActionResult> GetUsers()
+         // api/users?followers=true&gender=male
+        public async Task<IActionResult> GetUsers([FromQuery]UserQueryParams userParams)
         {
-            var users = await _repository.GetUsers();
+            userParams.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var users = await _repository.GetUsers(userParams);
 
             var result = _mapper.Map<IEnumerable<UserForListDTO>>(users);
 
@@ -53,17 +55,51 @@ namespace ServerApp.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return BadRequest("not valid request");
 
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var user = await _repository.GetUser(id);
 
-            _mapper.Map(model, user);
+            _mapper.Map(model,user);
 
             if (await _repository.SaveChanges())
                 return Ok();
 
             throw new System.Exception("güncelleme sırasında hata oluştu");
+
+        }
+
+       
+        [HttpPost("{followerUserId}/follow/{userId}")]
+        public async Task<IActionResult> FollowUser(int followerUserId, int userId)
+        {
+            if (followerUserId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            if(followerUserId == userId)
+                return BadRequest("Kendizi takip edemezsiniz");
+
+            var IsAlreadyFollowed = await _repository
+                .IsAlreadyFollowed(followerUserId,userId);
+
+            if(IsAlreadyFollowed) 
+                return BadRequest("Zaten kullanıcıyı takip ediyorsunuz");
+
+            if (await _repository.GetUser(userId) == null) 
+                return NotFound();
+
+            var follow = new UserToUser() {
+                UserId = userId,
+                FollowerId = followerUserId
+            };
+
+            _repository.Add<UserToUser>(follow);
+
+            if(await _repository.SaveChanges())
+                return Ok();
+
+            return BadRequest("Hata Oluştu");
+                    
         }
     }
 }

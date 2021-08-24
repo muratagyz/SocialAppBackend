@@ -15,7 +15,9 @@ namespace ServerApp.Models
       public string Country { get; set; }
       public string Introduction { get; set; }
       public string Hobbies { get; set; }
+
       public ICollection<Image> Images { get; set; }
+
       public ICollection<UserToUser> Followings { get; set; }
       public ICollection<UserToUser> Followers { get; set; }
 

@@ -9,7 +9,7 @@ using ServerApp.Data;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(SocialContext))]
-    [Migration("20210823111210_addUserToUserEntity")]
+    [Migration("20200614054721_addUserToUserEntity")]
     partial class addUserToUserEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -37,53 +37,46 @@ namespace ServerApp
         readonly string MyAllowOrigins = "_myAllowOrigins";
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SocialContext>(x => x.UseSqlite("Data Source=social.db"));
-            services.AddIdentity<User, Role>().AddEntityFrameworkStores<SocialContext>();
-            services.AddScoped<ISocialRepository, SocialRepository>();
-            services.Configure<IdentityOptions>(options =>
-            {
+            services.AddDbContext<SocialContext>(x=>x.UseSqlite("Data Source=social.db"));
+            services.AddIdentity<User,Role>().AddEntityFrameworkStores<SocialContext>();
+            services.AddScoped<ISocialRepository,SocialRepository>();
+            services.Configure<IdentityOptions>(options=> {
 
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequiredLength = 6;
+               options.Password.RequireDigit = true;
+               options.Password.RequireLowercase = true;
+               options.Password.RequireUppercase = true;
+               options.Password.RequireNonAlphanumeric = true;
+               options.Password.RequiredLength = 6;
 
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
+               options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+               options.Lockout.MaxFailedAccessAttempts = 5;
+               options.Lockout.AllowedForNewUsers = true;
 
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
+               options.User.AllowedUserNameCharacters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+               options.User.RequireUniqueEmail = true; 
             });
             services.AddAutoMapper(typeof(Startup));
-            services.AddControllers().AddNewtonsoftJson(options =>
-            {
+            services.AddControllers().AddNewtonsoftJson(options => {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            services.AddCors(options =>
-            {
+            services.AddCors(options => {
                 options.AddPolicy(
                     name: MyAllowOrigins,
-                    builder =>
-                    {
+                    builder => {
                         builder
                             .WithOrigins("http://localhost:4200")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
             });
-            services.AddAuthentication(x =>
-            {
+            services.AddAuthentication(x=> {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
-            {
+            .AddJwtBearer(x => {
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
+                x.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Secret").Value)),
                     ValidateIssuer = false,
@@ -94,25 +87,22 @@ namespace ServerApp
             services.AddScoped<LastActiveActionFilter>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,UserManager<User> userManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 SeedDatabase.Seed(userManager).Wait();
             }
-            else
-            {
-                app.UseExceptionHandler(appError =>
-                {
-
-                    appError.Run(async context =>
-                    {
+            else {
+                app.UseExceptionHandler(appError=> {
+                    
+                    appError.Run(async context => {
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         context.Response.ContentType = "application/json";
 
                         var exception = context.Features.Get<IExceptionHandlerFeature>();
-                        if (exception != null)
+                        if(exception!=null)
                         {
                             // loglama=> nlog,elmah
                             await context.Response.WriteAsync(new ErrorDetails()
