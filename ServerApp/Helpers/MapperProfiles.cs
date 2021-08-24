@@ -24,6 +24,8 @@ namespace ServerApp.Helpers
             CreateMap<Image,ImagesForDetails>();
 
             CreateMap<User,UserForUpdateDTO>().ReverseMap();
+            
+            CreateMap<MessageForCreateDTO,Message>().ReverseMap();
         }
     }
 }

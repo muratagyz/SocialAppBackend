@@ -10,5 +10,6 @@ namespace ServerApp.Models
         public int maxAge { get; set; } = 100;
         public string City { get; set; }
         public string Country { get; set; }
+        public string OrderBy { get; set; }
     }
 }
