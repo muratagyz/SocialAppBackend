@@ -13,7 +13,7 @@ We have used .NET Core API technology at the back end of our site, the purpose o
 
 Before you begin, ensure you have met the following requirements:
 <!--- These are just example requirements. Add, duplicate or remove as required --->
-* You have a `<Windows,MacOS>` machine.
+* You have a `<Windows,MacOS,Linux>` machine.
 * You must have Visual Studio Code, Postman and SQLite installed on your machine.
 
 
